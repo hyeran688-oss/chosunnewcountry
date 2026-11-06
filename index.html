@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고려 말 조선 초 역사 토론 게시판</title>
+  <style>
+    :root {
+      --board-bg: #1e3a29;
+      --board-border: #8b5a2b;
+      --chalk-white: #e0e0e0;
+      --green-note: #d4edda;
+      --green-border: #c3e6cb;
+      --green-text: #155724;
+      --pink-note: #f8d7da;
+      --pink-border: #f5c6cb;
+      --pink-text: #721c24;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+      background-color: #2b2b2b;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: var(--chalk-white);
+    }
+
+    .board-container {
+      flex: 1;
+      background-color: var(--board-bg);
+      border: 16px solid var(--board-border);
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 15px 20px;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px dashed rgba(255,255,255,0.2);
+      margin-bottom: 15px;
+      flex-shrink: 0;
+    }
+
+    .title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-add {
+      background-color: #f39c12;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-add:hover { background-color: #e67e22; transform: translateY(-2px); }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      height: calc(100% - 60px);
+      min-height: 0;
+    }
+
+    .topic-column {
+      background-color: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .topic-header {
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .topic-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #ffeaa7;
+      margin-bottom: 4px;
+    }
+
+    .topic-stats {
+      font-size: 0.85rem;
+      color: #dfe6e9;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .stat-green { color: #55efc4; font-weight: bold; }
+    .stat-pink { color: #ff7675; font-weight: bold; }
+
+    .opinion-split {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .opinion-box {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .box-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .box-label.agree { color: #81ecec; }
+    .box-label.oppose { color: #ff7675; }
+
+    .sticky-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+
+    .sticky-container::-webkit-scrollbar { width: 6px; }
+    .sticky-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+    .sticky-note {
+      position: relative;
+      padding: 10px;
+      border-radius: 3px;
+      box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.3);
+      color: #333;
+      word-break: break-all;
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .sticky-note.agree { background-color: var(--green-note); border: 1px solid var(--green-border); color: var(--green-text); }
+    .sticky-note.oppose { background-color: var(--pink-note); border: 1px solid var(--pink-border); color: var(--pink-text); }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding-bottom: 2px;
+    }
+
+    .btn-delete { background: none; border: none; color: #888; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+    .btn-delete:hover { color: #e74c3c; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: #ffffff; color: #333; width: 420px; max-width: 90%;
+      border-radius: 12px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .modal-card h2 { margin-bottom: 16px; font-size: 1.3rem; color: #2c3e50; text-align: center; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: #444; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; font-family: inherit;
+    }
+    .form-group textarea { height: 90px; resize: none; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+    .btn-cancel { background-color: #95a5a6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+    .btn-submit { background-color: #2ecc71; color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+  </style>
+
+  <!-- 파이어베이스 및 실시간 토론 로직 스크립트 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCL0mfecSYrkw1AZZVMyZ3c6qNlz79UBmw",
+      authDomain: "chosunestablishment.firebaseapp.com",
+      projectId: "chosunestablishment",
+      storageBucket: "chosunestablishment.firebasestorage.app",
+      messagingSenderId: "88708631100",
+      appId: "1:88708631100:web:57a2f50efc921c07ae5139",
+      measurementId: "G-ENCBGG859K"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const notesRef = ref(db, 'history_notes');
+
+    window.openModal = function() {
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    window.closeModal = function() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.getElementById('noteForm').reset();
+    }
+
+    window.saveNote = function(e) {
+      e.preventDefault();
+      const author = document.getElementById('author').value.trim();
+      const topic = document.getElementById('topicSelect').value;
+      const opinion = document.getElementById('opinionSelect').value;
+      const content = document.getElementById('content').value.trim();
+
+      if (!author || !content) return;
+
+      push(notesRef, {
+        author,
+        topic,
+        opinion,
+        content,
+        timestamp: Date.now()
+      });
+
+      closeModal();
+    }
+
+    window.deleteNote = function(id) {
+      if (confirm('이 포스트잇을 삭제하시겠습니까?')) {
+        remove(ref(db, `history_notes/${id}`));
+      }
+    }
+
+    // 실시간 데이터 수신 및 화면 갱신
+    onValue(notesRef, (snapshot) => {
+      const data = snapshot.val();
+      const notes = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          notes.push({ id: key, ...data[key] });
+        });
+      }
+      renderNotes(notes);
+    });
+
+    function renderNotes(notes) {
+      const topics = ['t1', 't2', 't3'];
+      const opinions = ['agree', 'oppose'];
+      const counts = { 't1-agree': 0, 't1-oppose': 0, 't2-agree': 0, 't2-oppose': 0, 't3-agree': 0, 't3-oppose': 0 };
+
+      topics.forEach(t => {
+        opinions.forEach(o => {
+          const container = document.getElementById(`notes-${t}-${o}`);
+          if (container) container.innerHTML = '';
+        });
+      });
+
+      notes.forEach(note => {
+        const key = `${note.topic}-${note.opinion}`;
+        if (counts.hasOwnProperty(key)) counts[key]++;
+
+        const container = document.getElementById(`notes-${key}`);
+        if (container) {
+          const noteEl = document.createElement('div');
+          noteEl.className = `sticky-note ${note.opinion}`;
+          noteEl.innerHTML = `
+            <div class="note-header">
+              <span class="note-author">${escapeHtml(note.author)}</span>
+              <button class="btn-delete" onclick="deleteNote('${note.id}')" title="삭제">✕</button>
+            </div>
+            <div class="note-content">${escapeHtml(note.content)}</div>
+          `;
+          container.appendChild(noteEl);
+        }
+      });
+
+      Object.keys(counts).forEach(key => {
+        const countEl = document.getElementById(`count-${key}`);
+        if (countEl) countEl.textContent = counts[key];
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</head>
+<body>
+
+  <div class="board-container">
+    <header>
+      <div class="title">📜 고려 말 조선 초 역사 토론 게시판</div>
+      <button class="btn-add" onclick="openModal()">+ 의견 남기기</button>
+    </header>
+
+    <main>
+      <!-- 주제 1: 요동 정벌 -->
+      <section class="topic-column">
+        <div class="topic-header">
+          <div class="topic-title">1. 요동 정벌</div>
+          <div class="topic-stats">
+            <span>최영파(찬성): <span class="stat-green" id="count-t1-agree">0</span></span><span>|</span>
+            <span>이성계파(반대): <span class="stat-pink" id="count-t1-oppose">0</span></span>
+          </div>
+        </div>
+        <div class="opinion-split">
+          <div class="opinion-box"><div class="box-label agree">최영파 (찬성 - 연두)</div><div class="sticky-container" id="notes-t1-agree"></div></div>
+          <div class="opinion-box"><div class="box-label oppose">이성계파 (반대 - 분홍)</div><div class="sticky-container" id="notes-t1-oppose"></div></div>
+        </div>
+      </section>
+
+      <!-- 주제 2: 위화도 회군 -->
+      <section class="topic-column">
+        <div class="topic-header">
+          <div class="topic-title">2. 위화도 회군</div>
+          <div class="topic-stats">
+            <span>회군 찬성: <span class="stat-green" id="count-t2-agree">0</span></span><span>|</span>
+            <span>회군 반대: <span class="stat-pink" id="count-t2-oppose">0</span></span>
+          </div>
+        </div>
+        <div class="opinion-split">
+          <div class="opinion-box"><div class="box-label agree">회군 찬성 (연두)</div><div class="sticky-container" id="notes-t2-agree"></div></div>
+          <div class="opinion-box"><div class="box-label oppose">회군 반대 (분홍)</div><div class="sticky-container" id="notes-t2-oppose"></div></div>
+        </div>
+      </section>
+
+      <!-- 주제 3: 조선 건국 -->
+      <section class="topic-column">
+        <div class="topic-header">
+          <div class="topic-title">3. 조선 건국</div>
+          <div class="topic-stats">
+            <span>정도전파(찬성): <span class="stat-green" id="count-t3-agree">0</span></span><span>|</span>
+            <span>정몽주파(반대): <span class="stat-pink" id="count-t3-oppose">0</span></span>
+          </div>
+        </div>
+        <div class="opinion-split">
+          <div class="opinion-box"><div class="box-label agree">정도전파 (찬성 - 연두)</div><div class="sticky-container" id="notes-t3-agree"></div></div>
+          <div class="opinion-box"><div class="box-label oppose">정몽주파 (반대 - 분홍)</div><div class="sticky-container" id="notes-t3-oppose"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 의견 작성 모달 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <h2>의견 작성하기</h2>
+      <form id="noteForm" onsubmit="saveNote(event)">
+        <div class="form-group">
+          <label for="author">이름 (또는 닉네임)</label>
+          <input type="text" id="author" placeholder="이름을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="topicSelect">주제 선택</label>
+          <select id="topicSelect" required>
+            <option value="t1">1. 요동 정벌</option>
+            <option value="t2">2. 위화도 회군</option>
+            <option value="t3">3. 조선 건국</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="opinionSelect">입장 선택</label>
+          <select id="opinionSelect" required>
+            <option value="agree">찬성</option>
+            <option value="oppose">반대</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="content">그렇게 생각한 까닭</label>
+          <textarea id="content" placeholder="이유와 생각을 자유롭게 적어주세요." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal()">취소</button>
+          <button type="submit" class="btn-submit">등록하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

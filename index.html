@@ -17,7 +17,11 @@
       --pink-text: #721c24;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
@@ -30,6 +34,7 @@
       color: var(--chalk-white);
     }
 
+    /* 칠판 틀 레일 디자인 */
     .board-container {
       flex: 1;
       background-color: var(--board-bg);
@@ -42,6 +47,7 @@
       overflow: hidden;
     }
 
+    /* 상단 헤더 영역 */
     header {
       display: flex;
       justify-content: space-between;
@@ -75,8 +81,12 @@
       transition: all 0.2s ease;
     }
 
-    .btn-add:hover { background-color: #e67e22; transform: translateY(-2px); }
+    .btn-add:hover {
+      background-color: #e67e22;
+      transform: translateY(-2px);
+    }
 
+    /* 메인 3컬럼 가로 레이아웃 */
     main {
       flex: 1;
       display: grid;
@@ -123,6 +133,7 @@
     .stat-green { color: #55efc4; font-weight: bold; }
     .stat-pink { color: #ff7675; font-weight: bold; }
 
+    /* 의견 영역 (찬성/반대 가로 split) */
     .opinion-split {
       flex: 1;
       display: grid;
@@ -163,9 +174,16 @@
       padding-right: 4px;
     }
 
-    .sticky-container::-webkit-scrollbar { width: 6px; }
-    .sticky-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+    /* 커스텀 스크롤바 */
+    .sticky-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sticky-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
 
+    /* 포스트잇 스타일 */
     .sticky-note {
       position: relative;
       padding: 10px;
@@ -175,10 +193,25 @@
       word-break: break-all;
       font-size: 0.88rem;
       line-height: 1.35;
+      transition: transform 0.2s ease;
     }
 
-    .sticky-note.agree { background-color: var(--green-note); border: 1px solid var(--green-border); color: var(--green-text); }
-    .sticky-note.oppose { background-color: var(--pink-note); border: 1px solid var(--pink-border); color: var(--pink-text); }
+    .sticky-note:hover {
+      transform: scale(1.02);
+      z-index: 10;
+    }
+
+    .sticky-note.agree {
+      background-color: var(--green-note);
+      border: 1px solid var(--green-border);
+      color: var(--green-text);
+    }
+
+    .sticky-note.oppose {
+      background-color: var(--pink-note);
+      border: 1px solid var(--pink-border);
+      color: var(--pink-text);
+    }
 
     .note-header {
       display: flex;
@@ -191,32 +224,119 @@
       padding-bottom: 2px;
     }
 
-    .btn-delete { background: none; border: none; color: #888; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-    .btn-delete:hover { color: #e74c3c; }
-
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100;
+    .note-author {
+      color: #222;
     }
-    .modal-overlay.active { display: flex; }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0 2px;
+    }
+
+    .btn-delete:hover {
+      color: #e74c3c;
+    }
+
+    .note-content {
+      white-space: pre-wrap;
+    }
+
+    /* 모달 레이어 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
 
     .modal-card {
-      background: #ffffff; color: #333; width: 420px; max-width: 90%;
-      border-radius: 12px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      background: #ffffff;
+      color: #333;
+      width: 420px;
+      max-width: 90%;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-    .modal-card h2 { margin-bottom: 16px; font-size: 1.3rem; color: #2c3e50; text-align: center; }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: #444; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; font-family: inherit;
+
+    .modal-card h2 {
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+      color: #2c3e50;
+      text-align: center;
     }
-    .form-group textarea { height: 90px; resize: none; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
-    .btn-cancel { background-color: #95a5a6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-    .btn-submit { background-color: #2ecc71; color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #444;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      height: 90px;
+      resize: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-cancel {
+      background-color: #95a5a6;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 
-  <!-- 파이어베이스 및 실시간 토론 로직 스크립트 -->
+  <!-- 파이어베이스 실시간 연동 스크립트 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -224,6 +344,7 @@
     const firebaseConfig = {
       apiKey: "AIzaSyCL0mfecSYrkw1AZZVMyZ3c6qNlz79UBmw",
       authDomain: "chosunestablishment.firebaseapp.com",
+      databaseURL: "https://class57-4f8f1-default-rtdb.firebaseio.com",
       projectId: "chosunestablishment",
       storageBucket: "chosunestablishment.firebasestorage.app",
       messagingSenderId: "88708631100",
@@ -285,7 +406,12 @@
     function renderNotes(notes) {
       const topics = ['t1', 't2', 't3'];
       const opinions = ['agree', 'oppose'];
-      const counts = { 't1-agree': 0, 't1-oppose': 0, 't2-agree': 0, 't2-oppose': 0, 't3-agree': 0, 't3-oppose': 0 };
+
+      const counts = {
+        't1-agree': 0, 't1-oppose': 0,
+        't2-agree': 0, 't2-oppose': 0,
+        't3-agree': 0, 't3-oppose': 0
+      };
 
       topics.forEach(t => {
         opinions.forEach(o => {
@@ -296,7 +422,9 @@
 
       notes.forEach(note => {
         const key = `${note.topic}-${note.opinion}`;
-        if (counts.hasOwnProperty(key)) counts[key]++;
+        if (counts.hasOwnProperty(key)) {
+          counts[key]++;
+        }
 
         const container = document.getElementById(`notes-${key}`);
         if (container) {
@@ -315,12 +443,19 @@
 
       Object.keys(counts).forEach(key => {
         const countEl = document.getElementById(`count-${key}`);
-        if (countEl) countEl.textContent = counts[key];
+        if (countEl) {
+          countEl.textContent = counts[key];
+        }
       });
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
   </script>
 </head>
@@ -334,47 +469,68 @@
 
     <main>
       <!-- 주제 1: 요동 정벌 -->
-      <section class="topic-column">
+      <section class="topic-column" id="topic-1">
         <div class="topic-header">
           <div class="topic-title">1. 요동 정벌</div>
           <div class="topic-stats">
-            <span>최영파(찬성): <span class="stat-green" id="count-t1-agree">0</span></span><span>|</span>
+            <span>최영파(찬성): <span class="stat-green" id="count-t1-agree">0</span></span>
+            <span>|</span>
             <span>이성계파(반대): <span class="stat-pink" id="count-t1-oppose">0</span></span>
           </div>
         </div>
         <div class="opinion-split">
-          <div class="opinion-box"><div class="box-label agree">최영파 (찬성 - 연두)</div><div class="sticky-container" id="notes-t1-agree"></div></div>
-          <div class="opinion-box"><div class="box-label oppose">이성계파 (반대 - 분홍)</div><div class="sticky-container" id="notes-t1-oppose"></div></div>
+          <div class="opinion-box">
+            <div class="box-label agree">최영파 (찬성 - 연두)</div>
+            <div class="sticky-container" id="notes-t1-agree"></div>
+          </div>
+          <div class="opinion-box">
+            <div class="box-label oppose">이성계파 (반대 - 분홍)</div>
+            <div class="sticky-container" id="notes-t1-oppose"></div>
+          </div>
         </div>
       </section>
 
       <!-- 주제 2: 위화도 회군 -->
-      <section class="topic-column">
+      <section class="topic-column" id="topic-2">
         <div class="topic-header">
           <div class="topic-title">2. 위화도 회군</div>
           <div class="topic-stats">
-            <span>회군 찬성: <span class="stat-green" id="count-t2-agree">0</span></span><span>|</span>
+            <span>회군 찬성: <span class="stat-green" id="count-t2-agree">0</span></span>
+            <span>|</span>
             <span>회군 반대: <span class="stat-pink" id="count-t2-oppose">0</span></span>
           </div>
         </div>
         <div class="opinion-split">
-          <div class="opinion-box"><div class="box-label agree">회군 찬성 (연두)</div><div class="sticky-container" id="notes-t2-agree"></div></div>
-          <div class="opinion-box"><div class="box-label oppose">회군 반대 (분홍)</div><div class="sticky-container" id="notes-t2-oppose"></div></div>
+          <div class="opinion-box">
+            <div class="box-label agree">회군 찬성 (연두)</div>
+            <div class="sticky-container" id="notes-t2-agree"></div>
+          </div>
+          <div class="opinion-box">
+            <div class="box-label oppose">회군 반대 (분홍)</div>
+            <div class="sticky-container" id="notes-t2-oppose"></div>
+          </div>
         </div>
       </section>
 
       <!-- 주제 3: 조선 건국 -->
-      <section class="topic-column">
+      <section class="topic-column" id="topic-3">
         <div class="topic-header">
           <div class="topic-title">3. 조선 건국</div>
           <div class="topic-stats">
-            <span>정도전파(찬성): <span class="stat-green" id="count-t3-agree">0</span></span><span>|</span>
+            <span>정도전파(찬성): <span class="stat-green" id="count-t3-agree">0</span></span>
+            <span>|</span>
             <span>정몽주파(반대): <span class="stat-pink" id="count-t3-oppose">0</span></span>
           </div>
         </div>
         <div class="opinion-split">
-          <div class="opinion-box"><div class="box-label agree">정도전파 (찬성 - 연두)</div><div class="sticky-container" id="notes-t3-agree"></div></div>
-          <div class="opinion-box"><div class="box-label oppose">정몽주파 (반대 - 분홍)</div><div class="sticky-container" id="notes-t3-oppose"></div></div>
+          <div class="opinion-box">
+            <div class="box-label agree">정도전파 (찬성 - 연두)</div>
+            <div class="sticky-container" id="notes-t3-agree"></div>
+          </div>
+          <div class="opinion-box">
+            <div class="box-label oppose">정몽주파 (반대 - 분홍)</div>
+            <div class="sticky-container" id="notes-t3-oppose"></div>
+          </div>
         </div>
       </section>
     </main>
